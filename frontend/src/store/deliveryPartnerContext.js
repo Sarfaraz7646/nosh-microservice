@@ -1,5 +1,5 @@
-import { createContext } from 'react'
+import { createContext } from "react";
 
-const DeliveryPartnerContext = createContext(null)
+const DeliveryPartnerContext = createContext(null);
 
-export default DeliveryPartnerContext
+export default DeliveryPartnerContext;
