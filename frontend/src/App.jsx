@@ -91,7 +91,7 @@ function AppRoutes() {
 
 export default function App() {
   return (
-    // I have added the folder for checking......
+    // I am removing this
     <BrowserRouter>
       <CustomerProvider>
         <AppRoutes />
