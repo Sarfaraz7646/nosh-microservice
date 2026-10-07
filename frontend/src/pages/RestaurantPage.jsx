@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { ArrowLeft, Clock3, Heart, MapPin, Star } from "lucide-react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import MenuItemRow from "../components/MenuItemRow";
 import { findRestaurant } from "../services/catalog";
 import { customerApi } from "../services/customerApi";
@@ -10,7 +10,9 @@ import { formatCurrency } from "../utils/currency";
 export default function RestaurantPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { addToCart, favorites, toggleFavorite, restaurants } = useCustomer();
+  const { user, addToCart, favorites, toggleFavorite, restaurants } =
+    useCustomer();
+  const location = useLocation();
   const [activeCategory, setActiveCategory] = useState("All");
   const [remoteResult, setRemoteResult] = useState({
     id: null,
@@ -67,6 +69,27 @@ export default function RestaurantPage() {
       ? restaurant.menu
       : restaurant.menu.filter((item) => item.category === activeCategory);
 
+  function requireCustomer(action) {
+    if (user?.role === "CUSTOMER") return true;
+    navigate("/login", {
+      state: {
+        from: `${location.pathname}${location.search}${location.hash}`,
+        pendingAction: action,
+      },
+    });
+    return false;
+  }
+
+  function handleAddToCart(item) {
+    if (requireCustomer({ type: "addToCart", item, restaurant }))
+      addToCart(item, restaurant);
+  }
+
+  function handleToggleFavorite() {
+    if (requireCustomer({ type: "toggleFavorite", restaurantId: restaurant.id }))
+      toggleFavorite(restaurant.id);
+  }
+
   return (
     <div className="restaurant-detail page-enter">
       <Link className="back-link" to="/restaurants">
@@ -97,7 +120,7 @@ export default function RestaurantPage() {
         <button
           className={`button button-outline save-restaurant ${favorites.includes(restaurant.id) ? "is-favorite" : ""}`}
           type="button"
-          onClick={() => toggleFavorite(restaurant.id)}
+          onClick={handleToggleFavorite}
         >
           <Heart
             size={16}
@@ -148,7 +171,7 @@ export default function RestaurantPage() {
             <MenuItemRow
               item={item}
               restaurant={restaurant}
-              onAdd={addToCart}
+              onAdd={handleAddToCart}
               key={item.id}
             />
           ))}

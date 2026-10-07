@@ -1,11 +1,27 @@
 import { Heart, Star, Timer } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { formatCurrency } from '../utils/currency'
 import { useCustomer } from '../hooks/useCustomer'
 
 export default function RestaurantCard({ restaurant }) {
-  const { favorites, toggleFavorite } = useCustomer()
+  const { user, favorites, toggleFavorite } = useCustomer()
+  const location = useLocation()
+  const navigate = useNavigate()
   const isFavorite = favorites.includes(restaurant.id)
+
+  function handleFavorite() {
+    if (user?.role === 'CUSTOMER') {
+      toggleFavorite(restaurant.id)
+      return
+    }
+
+    navigate('/login', {
+      state: {
+        from: `${location.pathname}${location.search}${location.hash}`,
+        pendingAction: { type: 'toggleFavorite', restaurantId: restaurant.id },
+      },
+    })
+  }
 
   return (
     <article className="restaurant-card">
@@ -31,7 +47,7 @@ export default function RestaurantCard({ restaurant }) {
         type="button"
         aria-label={isFavorite ? `Remove ${restaurant.name} from favourites` : `Save ${restaurant.name}`}
         aria-pressed={isFavorite}
-        onClick={() => toggleFavorite(restaurant.id)}
+        onClick={handleFavorite}
       >
         <Heart size={18} fill={isFavorite ? 'currentColor' : 'none'} />
       </button>

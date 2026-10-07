@@ -41,7 +41,11 @@ function ProtectedLayout() {
   return user ? (
     <Outlet />
   ) : (
-    <Navigate to="/login" replace state={{ from: location.pathname }} />
+    <Navigate
+      to="/login"
+      replace
+      state={{ from: `${location.pathname}${location.search}${location.hash}` }}
+    />
   );
 }
 
@@ -96,17 +100,19 @@ function AppRoutes() {
           <Route path="/delivery/profile" element={<DeliveryProfilePage />} />
         </Route>
       </Route>
-      <Route element={<ProtectedLayout />}>
-        <Route element={<CustomerLayout />}>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/restaurants" element={<RestaurantsPage />} />
-          <Route path="/restaurant/:id" element={<RestaurantPage />} />
+      <Route element={<CustomerLayout />}>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/restaurants" element={<RestaurantsPage />} />
+        <Route path="/restaurant/:id" element={<RestaurantPage />} />
+        <Route element={<ProtectedLayout />}>
           <Route path="/cart" element={<CartPage />} />
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/orders" element={<OrdersPage />} />
           <Route path="/order/:id" element={<OrderDetailsPage />} />
           <Route path="/profile" element={<ProfilePage />} />
         </Route>
+      </Route>
+      <Route element={<ProtectedLayout />}>
         <Route path="/dashboard" element={<RestaurantDashboardLayout />}>
           <Route index element={<DashboardOverviewPage />} />
           <Route path="orders" element={<DashboardOrdersPage />} />

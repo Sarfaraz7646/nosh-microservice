@@ -19,7 +19,7 @@ export default function RegisterPage() {
   });
   const [errorMessage, setErrorMessage] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  const { signIn } = useCustomer();
+  const { signIn, addToCart, toggleFavorite } = useCustomer();
   const navigate = useNavigate();
 
   async function handleSubmit(event) {
@@ -28,12 +28,21 @@ export default function RegisterPage() {
     setErrorMessage("");
     try {
       const user = await signIn(form);
+      const pendingAction = location.state?.pendingAction;
+      if (user.role === "CUSTOMER" && pendingAction?.type === "addToCart") {
+        addToCart(pendingAction.item, pendingAction.restaurant);
+      } else if (
+        user.role === "CUSTOMER" &&
+        pendingAction?.type === "toggleFavorite"
+      ) {
+        toggleFavorite(pendingAction.restaurantId);
+      }
       navigate(
         user.role === "RESTAURANT"
           ? "/dashboard/profile"
           : user.role === "DELIVERY_PARTNER"
             ? "/delivery/profile"
-            : "/",
+            : location.state?.from || "/",
         { replace: true },
       );
     } catch (error) {
@@ -143,7 +152,7 @@ export default function RegisterPage() {
         </button>
       </form>
       <p className="auth-switch">
-        Already have an account? <Link to="/login">Sign in</Link>
+        Already have an account? <Link to="/login" state={location.state}>Sign in</Link>
       </p>
     </AuthFrame>
   );

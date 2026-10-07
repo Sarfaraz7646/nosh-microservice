@@ -9,7 +9,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  const { signIn } = useCustomer();
+  const { signIn, addToCart, toggleFavorite } = useCustomer();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -19,6 +19,15 @@ export default function LoginPage() {
     setErrorMessage("");
     try {
       const user = await signIn({ email, password });
+      const pendingAction = location.state?.pendingAction;
+      if (user.role === "CUSTOMER" && pendingAction?.type === "addToCart") {
+        addToCart(pendingAction.item, pendingAction.restaurant);
+      } else if (
+        user.role === "CUSTOMER" &&
+        pendingAction?.type === "toggleFavorite"
+      ) {
+        toggleFavorite(pendingAction.restaurantId);
+      }
       navigate(
         user.role === "ADMIN"
           ? "/admin/delivery-partners"
@@ -95,7 +104,7 @@ export default function LoginPage() {
         </button>
       </form>
       <p className="auth-switch">
-        New around here? <Link to="/register">Create an account</Link>
+        New around here? <Link to="/register" state={location.state}>Create an account</Link>
       </p>
     </AuthFrame>
   );
