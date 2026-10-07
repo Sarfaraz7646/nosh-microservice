@@ -80,11 +80,6 @@ export default function RestaurantPage() {
     return false;
   }
 
-  function handleAddToCart(item) {
-    if (requireCustomer({ type: "addToCart", item, restaurant }))
-      addToCart(item, restaurant);
-  }
-
   function handleToggleFavorite() {
     if (requireCustomer({ type: "toggleFavorite", restaurantId: restaurant.id }))
       toggleFavorite(restaurant.id);
@@ -171,7 +166,7 @@ export default function RestaurantPage() {
             <MenuItemRow
               item={item}
               restaurant={restaurant}
-              onAdd={handleAddToCart}
+              onAdd={addToCart}
               key={item.id}
             />
           ))}

@@ -104,8 +104,8 @@ function AppRoutes() {
         <Route path="/" element={<HomePage />} />
         <Route path="/restaurants" element={<RestaurantsPage />} />
         <Route path="/restaurant/:id" element={<RestaurantPage />} />
+        <Route path="/cart" element={<CartPage />} />
         <Route element={<ProtectedLayout />}>
-          <Route path="/cart" element={<CartPage />} />
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/orders" element={<OrdersPage />} />
           <Route path="/order/:id" element={<OrderDetailsPage />} />
