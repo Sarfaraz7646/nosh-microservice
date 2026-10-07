@@ -23,7 +23,6 @@ export default function Header() {
           <NavLink to="/" end>Home</NavLink>
           <NavLink to="/restaurants">Explore</NavLink>
           <NavLink to="/orders">Orders</NavLink>
-          <NavLink to="/dashboard">Partner</NavLink>
         </nav>
         <div className="header-actions">
           <div className="notification-wrap">
