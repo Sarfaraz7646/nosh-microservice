@@ -1,5 +1,5 @@
 export const API_ROOT = (
-  import.meta.env.VITE_API_URL || "http://localhost:5000/api"
+  import.meta.env.VITE_API_URL || "http://localhost:5000/api" || "http://localhost:5001/api" || "http://localhost:5002/api" || "http://localhost:5003/api"
 ).replace(/\/$/, "");
 export const API_ORIGIN = API_ROOT.replace(/\/api$/, "");
 
